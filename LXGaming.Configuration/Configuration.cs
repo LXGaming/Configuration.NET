@@ -3,16 +3,11 @@ using System.Runtime.ExceptionServices;
 
 namespace LXGaming.Configuration;
 
-public class Configuration(string directoryPath) : IDisposable {
-
-    public string DirectoryPath { get; } = directoryPath;
+public class Configuration : IDisposable {
 
     protected ConcurrentDictionary<string, IProvider<object>> Providers { get; } = new();
 
     private bool _disposed;
-
-    public Configuration() : this(Directory.GetCurrentDirectory()) {
-    }
 
     public async Task LoadAsync() {
         ObjectDisposedException.ThrowIf(_disposed, this);

@@ -13,9 +13,8 @@ public static class JsonExtensions {
 
     public static JsonFileProvider<T> CreateJsonFile<T>(
         this Configuration configuration,
-        string name,
+        string path,
         JsonSerializerOptions? options = null) where T : class {
-        var path = Path.Combine(configuration.DirectoryPath, name);
         var provider = new JsonFileProvider<T>(path, options);
         configuration.Register(provider.FilePath, provider);
         return provider;
@@ -30,9 +29,9 @@ public static class JsonExtensions {
 
     public static async Task<JsonFileProvider<T>> LoadJsonFileAsync<T>(
         this Configuration configuration,
-        string name,
+        string path,
         JsonSerializerOptions? options = null) where T : class {
-        var provider = configuration.CreateJsonFile<T>(name, options);
+        var provider = configuration.CreateJsonFile<T>(path, options);
         await provider.LoadAsync().ConfigureAwait(false);
         return provider;
     }
