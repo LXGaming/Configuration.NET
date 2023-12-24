@@ -5,14 +5,14 @@ namespace LXGaming.Configuration.Json;
 public static class JsonExtensions {
 
     public static JsonFileProvider<T> CreateJsonFile<T>(
-        this Configuration configuration,
+        this IConfiguration configuration,
         JsonSerializerOptions? options = null) where T : class {
         var name = GetJsonFileName<T>();
         return configuration.CreateJsonFile<T>(name, options);
     }
 
     public static JsonFileProvider<T> CreateJsonFile<T>(
-        this Configuration configuration,
+        this IConfiguration configuration,
         string path,
         JsonSerializerOptions? options = null) where T : class {
         var provider = new JsonFileProvider<T>(path, options);
@@ -21,14 +21,14 @@ public static class JsonExtensions {
     }
 
     public static Task<JsonFileProvider<T>> LoadJsonFileAsync<T>(
-        this Configuration configuration,
+        this IConfiguration configuration,
         JsonSerializerOptions? options = null) where T : class {
         var name = GetJsonFileName<T>();
         return configuration.LoadJsonFileAsync<T>(name, options);
     }
 
     public static async Task<JsonFileProvider<T>> LoadJsonFileAsync<T>(
-        this Configuration configuration,
+        this IConfiguration configuration,
         string path,
         JsonSerializerOptions? options = null) where T : class {
         var provider = configuration.CreateJsonFile<T>(path, options);

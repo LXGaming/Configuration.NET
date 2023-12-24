@@ -3,16 +3,16 @@ using System.Runtime.ExceptionServices;
 
 namespace LXGaming.Configuration;
 
-public class Configuration : IDisposable {
+public class DefaultConfiguration : IConfiguration {
 
     protected ConcurrentDictionary<string, IProvider<object>> Providers { get; } = new();
 
     private bool _disposed;
 
-    public async Task LoadAsync() {
+    public async Task LoadAsync(CancellationToken cancellationToken = default) {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
-        var task = Task.WhenAll(Providers.Select(pair => pair.Value.LoadAsync()));
+        var task = Task.WhenAll(Providers.Select(pair => pair.Value.LoadAsync(cancellationToken)));
         try {
             await task.ConfigureAwait(false);
         } catch {
@@ -24,10 +24,10 @@ public class Configuration : IDisposable {
         }
     }
 
-    public async Task SaveAsync() {
+    public async Task SaveAsync(CancellationToken cancellationToken = default) {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
-        var task = Task.WhenAll(Providers.Select(pair => pair.Value.SaveAsync()));
+        var task = Task.WhenAll(Providers.Select(pair => pair.Value.SaveAsync(cancellationToken)));
         try {
             await task.ConfigureAwait(false);
         } catch {
