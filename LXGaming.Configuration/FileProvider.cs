@@ -34,7 +34,7 @@ public abstract class FileProvider<T> : IProvider<T> {
 
         if (!File.Exists(FilePath)) {
             Value ??= Activator.CreateInstance<T>();
-            await SaveAsync(cancellationToken);
+            await SaveAsync(cancellationToken).ConfigureAwait(false);
             return;
         }
 
