@@ -1,4 +1,4 @@
-﻿namespace LXGaming.Configuration;
+﻿namespace LXGaming.Configuration.File;
 
 public abstract class FileProvider<T> : IProvider<T> {
 
@@ -32,7 +32,7 @@ public abstract class FileProvider<T> : IProvider<T> {
     public async Task LoadAsync(CancellationToken cancellationToken = default) {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
-        if (!File.Exists(FilePath)) {
+        if (!System.IO.File.Exists(FilePath)) {
             Value ??= Activator.CreateInstance<T>();
             await SaveAsync(cancellationToken).ConfigureAwait(false);
             return;

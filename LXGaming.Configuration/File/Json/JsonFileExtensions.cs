@@ -1,8 +1,8 @@
 ﻿using System.Text.Json;
 
-namespace LXGaming.Configuration.Json;
+namespace LXGaming.Configuration.File.Json;
 
-public static class JsonExtensions {
+public static class JsonFileExtensions {
 
     public static JsonFileProvider<T> CreateJsonFile<T>(
         this IConfiguration configuration,
