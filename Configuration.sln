@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LXGaming.Configuration", "LXGaming.Configuration\LXGaming.Configuration.csproj", "{B5FDDD9B-6403-49E9-9B20-0BD072772415}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LXGaming.Configuration.Hosting", "LXGaming.Configuration.Hosting\LXGaming.Configuration.Hosting.csproj", "{58C98D33-37C0-4289-A5C5-F7784A341B76}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{B5FDDD9B-6403-49E9-9B20-0BD072772415}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5FDDD9B-6403-49E9-9B20-0BD072772415}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B5FDDD9B-6403-49E9-9B20-0BD072772415}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58C98D33-37C0-4289-A5C5-F7784A341B76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58C98D33-37C0-4289-A5C5-F7784A341B76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58C98D33-37C0-4289-A5C5-F7784A341B76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58C98D33-37C0-4289-A5C5-F7784A341B76}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
