@@ -5,7 +5,7 @@ namespace LXGaming.Configuration;
 
 public class DefaultConfiguration : IConfiguration {
 
-    protected ConcurrentDictionary<string, IProvider<object>> Providers { get; } = new();
+    protected ConcurrentDictionary<string, IProvider> Providers { get; } = new();
 
     private bool _disposed;
 
@@ -39,7 +39,7 @@ public class DefaultConfiguration : IConfiguration {
         }
     }
 
-    public void Register<T>(string key, IProvider<T> provider) where T : class {
+    public void Register(string key, IProvider provider) {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
         if (Providers.TryAdd(key, provider)) {
@@ -57,50 +57,24 @@ public class DefaultConfiguration : IConfiguration {
         }
     }
 
-    public IProvider<T> GetRequiredProvider<T>(string key) where T : class {
+    public IProvider? GetProvider(string key) {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
-        var provider = GetProvider<T>(key);
-        if (provider == null) {
-            throw new InvalidOperationException($"No service for '{key}' has been registered");
-        }
-
-        return provider;
+        return Providers.GetValueOrDefault(key);
     }
 
-    public IProvider<T>? GetProvider<T>(string key) where T : class {
+    public IProvider? GetProvider(Type providerType) {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
-        if (Providers.TryGetValue(key, out var value)) {
-            return (IProvider<T>) value;
-        }
-
-        return null;
+        return GetProviders(providerType).FirstOrDefault();
     }
 
-    public IProvider<T> GetRequiredProvider<T>() where T : class {
-        ObjectDisposedException.ThrowIf(_disposed, this);
-
-        var provider = GetProvider<T>();
-        if (provider == null) {
-            throw new InvalidOperationException($"No service for '{nameof(T)}' has been registered");
-        }
-
-        return provider;
-    }
-
-    public IProvider<T>? GetProvider<T>() where T : class {
-        ObjectDisposedException.ThrowIf(_disposed, this);
-
-        return GetProviders<T>().FirstOrDefault();
-    }
-
-    public IEnumerable<IProvider<T>> GetProviders<T>() where T : class {
+    public IEnumerable<IProvider> GetProviders(Type providerType) {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
         foreach (var pair in Providers) {
-            if (pair.Value is IProvider<T> provider) {
-                yield return provider;
+            if (providerType.IsInstanceOfType(pair.Value)) {
+                yield return pair.Value;
             }
         }
     }

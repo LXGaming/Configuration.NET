@@ -1,8 +1,8 @@
 ﻿namespace LXGaming.Configuration;
 
-public interface IProvider<out T> : IDisposable {
+public interface IProvider : IDisposable {
 
-    public T? Value { get; }
+    object? Value { get; }
 
     Task LoadAsync(CancellationToken cancellationToken = default);
 

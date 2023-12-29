@@ -1,4 +1,6 @@
-﻿namespace LXGaming.Configuration.File;
+﻿using LXGaming.Configuration.Generic;
+
+namespace LXGaming.Configuration.File;
 
 public abstract class FileProvider<T> : IProvider<T> {
 
