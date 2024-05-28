@@ -7,7 +7,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Alex Thomson</Authors>
     <Product>Configuration</Product>
-    <Copyright>Copyright © Alex Thomson</Copyright>
+    <Copyright>© Alex Thomson. All rights reserved.</Copyright>
     <Title>Configuration</Title>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/LXGaming/Configuration.NET</PackageProjectUrl>
