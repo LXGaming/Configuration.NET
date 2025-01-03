@@ -12,7 +12,7 @@ public class JsonFileProvider<T>(
         await using var stream = System.IO.File.Open(FilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
         var value = await JsonSerializer.DeserializeAsync<T>(stream, options, CancellationToken.None).ConfigureAwait(false);
         if (value == null) {
-            throw new JsonException($"Failed to deserialize {nameof(T)}");
+            throw new JsonException($"Failed to deserialize {typeof(T).FullName}");
         }
 
         Value = value;
