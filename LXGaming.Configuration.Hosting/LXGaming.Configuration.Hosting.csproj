@@ -11,6 +11,7 @@
     <Product>Configuration Hosting</Product>
     <Copyright>© Alex Thomson. All rights reserved.</Copyright>
     <Title>Configuration Hosting</Title>
+    <Description>Hosting integration for Configuration.NET</Description>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/LXGaming/Configuration.NET</PackageProjectUrl>
     <PackageIcon>icon.png</PackageIcon>
