@@ -9,7 +9,7 @@ public static class Extensions {
     public static T GetRequiredProvider<T>(this IConfiguration configuration, string key) where T : IProvider {
         var provider = configuration.GetProvider<T>(key);
         if (provider == null) {
-            throw new InvalidOperationException($"No service for '{key}' has been registered");
+            throw new InvalidOperationException($"No provider for '{key}' has been registered.");
         }
 
         return provider;
@@ -22,7 +22,7 @@ public static class Extensions {
     public static T GetRequiredProvider<T>(this IConfiguration configuration) where T : IProvider {
         var provider = configuration.GetProvider<T>();
         if (provider == null) {
-            throw new InvalidOperationException($"No service for '{typeof(T).FullName}' has been registered");
+            throw new InvalidOperationException($"No provider for '{typeof(T).FullName}' has been registered.");
         }
 
         return provider;

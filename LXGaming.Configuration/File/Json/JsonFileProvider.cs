@@ -12,7 +12,7 @@ public class JsonFileProvider<T>(
         await using var stream = System.IO.File.Open(FilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
         var value = await JsonSerializer.DeserializeAsync<T>(stream, options, CancellationToken.None).ConfigureAwait(false);
         if (value == null) {
-            throw new JsonException($"Failed to deserialize {typeof(T).FullName}");
+            throw new JsonException($"Failed to deserialize {typeof(T).FullName}.");
         }
 
         Value = value;
@@ -23,7 +23,7 @@ public class JsonFileProvider<T>(
 
         var value = Value;
         if (value == null) {
-            throw new InvalidOperationException("Value is unavailable");
+            throw new InvalidOperationException("Value is unavailable.");
         }
 
         using var stream = System.IO.File.Open(FilePath, FileMode.Create, FileAccess.Write, FileShare.None);

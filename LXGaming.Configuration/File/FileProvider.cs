@@ -17,12 +17,12 @@ public abstract class FileProvider<T> : IProvider<T> {
         var fullPath = Path.GetFullPath(path);
         var fileName = Path.GetFileName(fullPath);
         if (string.IsNullOrEmpty(fileName)) {
-            throw new ArgumentException("Invalid file name");
+            throw new ArgumentException("Invalid file name.");
         }
 
         var directoryName = Path.GetDirectoryName(fullPath);
         if (string.IsNullOrEmpty(directoryName)) {
-            throw new ArgumentException("Invalid directory name");
+            throw new ArgumentException("Invalid directory name.");
         }
 
         DirectoryPath = directoryName;

@@ -46,7 +46,7 @@ public class DefaultConfiguration : IConfiguration {
             return;
         }
 
-        throw new InvalidOperationException($"{key} is already registered");
+        throw new InvalidOperationException($"Key '{key}' is already registered.");
     }
 
     public void Unregister(string key) {
