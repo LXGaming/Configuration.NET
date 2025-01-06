@@ -10,7 +10,7 @@ public abstract class FileProvider<T> : IProvider<T> {
 
     public T? Value { get; protected set; }
 
-    private readonly SemaphoreSlim _semaphore;
+    private readonly SemaphoreSlim _lock;
     private bool _disposed;
 
     protected FileProvider(string path) {
@@ -28,7 +28,7 @@ public abstract class FileProvider<T> : IProvider<T> {
         DirectoryPath = directoryName;
         FilePath = fullPath;
 
-        _semaphore = new SemaphoreSlim(1, 1);
+        _lock = new SemaphoreSlim(1, 1);
     }
 
     public async Task LoadAsync(CancellationToken cancellationToken = default) {
@@ -40,11 +40,11 @@ public abstract class FileProvider<T> : IProvider<T> {
             return;
         }
 
-        await _semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+        await _lock.WaitAsync(cancellationToken).ConfigureAwait(false);
         try {
             await DeserializeAsync(cancellationToken).ConfigureAwait(false);
         } finally {
-            _semaphore.Release();
+            _lock.Release();
         }
     }
 
@@ -55,11 +55,11 @@ public abstract class FileProvider<T> : IProvider<T> {
             Directory.CreateDirectory(DirectoryPath);
         }
 
-        await _semaphore.WaitAsync(cancellationToken).ConfigureAwait(false);
+        await _lock.WaitAsync(cancellationToken).ConfigureAwait(false);
         try {
             await SerializeAsync(cancellationToken).ConfigureAwait(false);
         } finally {
-            _semaphore.Release();
+            _lock.Release();
         }
     }
 
@@ -78,7 +78,7 @@ public abstract class FileProvider<T> : IProvider<T> {
         }
 
         if (disposing) {
-            _semaphore.Dispose();
+            _lock.Dispose();
         }
 
         _disposed = true;
