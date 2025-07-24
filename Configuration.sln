@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LXGaming.Configuration", "L
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LXGaming.Configuration.Hosting", "LXGaming.Configuration.Hosting\LXGaming.Configuration.Hosting.csproj", "{58C98D33-37C0-4289-A5C5-F7784A341B76}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LXGaming.Configuration.File.Yaml", "LXGaming.Configuration.File.Yaml\LXGaming.Configuration.File.Yaml.csproj", "{F2012680-1DE0-48CB-A7E5-0499F6C4871A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{58C98D33-37C0-4289-A5C5-F7784A341B76}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58C98D33-37C0-4289-A5C5-F7784A341B76}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{58C98D33-37C0-4289-A5C5-F7784A341B76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2012680-1DE0-48CB-A7E5-0499F6C4871A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2012680-1DE0-48CB-A7E5-0499F6C4871A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2012680-1DE0-48CB-A7E5-0499F6C4871A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2012680-1DE0-48CB-A7E5-0499F6C4871A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
