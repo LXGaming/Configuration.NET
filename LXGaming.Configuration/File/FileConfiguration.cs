@@ -2,18 +2,19 @@
 
 namespace LXGaming.Configuration.File;
 
-public abstract class FileProvider<T> : IProvider<T> {
+public abstract class FileConfiguration<T> : IConfiguration<T> where T : new() {
 
     public string DirectoryPath { get; }
 
     public string FilePath { get; }
 
+    /// <inheritdoc />
     public T? Value { get; protected set; }
 
     private readonly SemaphoreSlim _lock;
     private bool _disposed;
 
-    protected FileProvider(string path) {
+    protected FileConfiguration(string path) {
         var fullPath = Path.GetFullPath(path);
         var fileName = Path.GetFileName(fullPath);
         if (string.IsNullOrEmpty(fileName)) {
@@ -31,11 +32,12 @@ public abstract class FileProvider<T> : IProvider<T> {
         _lock = new SemaphoreSlim(1, 1);
     }
 
+    /// <inheritdoc />
     public async Task LoadAsync(CancellationToken cancellationToken = default) {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
         if (!System.IO.File.Exists(FilePath)) {
-            Value ??= Activator.CreateInstance<T>();
+            Value ??= new T();
             await SaveAsync(cancellationToken).ConfigureAwait(false);
             return;
         }
@@ -48,6 +50,7 @@ public abstract class FileProvider<T> : IProvider<T> {
         }
     }
 
+    /// <inheritdoc />
     public async Task SaveAsync(CancellationToken cancellationToken = default) {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
@@ -67,6 +70,7 @@ public abstract class FileProvider<T> : IProvider<T> {
 
     protected abstract Task SerializeAsync(CancellationToken cancellationToken);
 
+    /// <inheritdoc />
     public void Dispose() {
         Dispose(true);
         GC.SuppressFinalize(this);
