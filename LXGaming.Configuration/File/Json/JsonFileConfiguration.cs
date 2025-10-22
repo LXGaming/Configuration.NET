@@ -34,7 +34,7 @@ public class JsonFileConfiguration<T>(string path, JsonSerializerOptions? option
         Value = value;
     }
 
-    protected override Task SerializeAsync(CancellationToken cancellationToken) {
+    protected override async Task SerializeAsync(CancellationToken cancellationToken) {
         cancellationToken.ThrowIfCancellationRequested();
 
         var value = Value;
@@ -42,9 +42,9 @@ public class JsonFileConfiguration<T>(string path, JsonSerializerOptions? option
             throw new InvalidOperationException("Value is unavailable.");
         }
 
-        using var stream = System.IO.File.Open(FilePath, FileMode.Create, FileAccess.Write, FileShare.None);
+        await using var stream = System.IO.File.Open(FilePath, FileMode.Create, FileAccess.Write, FileShare.None);
         // Don't pass the cancellation token as we've just truncated the file.
-        return JsonSerializer.SerializeAsync<T>(stream, value, options, CancellationToken.None);
+        await JsonSerializer.SerializeAsync<T>(stream, value, options, CancellationToken.None);
     }
 
     private static string GetPath() {
