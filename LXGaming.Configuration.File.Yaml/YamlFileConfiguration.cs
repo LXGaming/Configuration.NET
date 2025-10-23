@@ -3,21 +3,24 @@ using YamlDotNet.Serialization;
 
 namespace LXGaming.Configuration.File.Yaml;
 
-public class YamlFileConfiguration<T>(string path, IDeserializer deserializer, ISerializer serializer)
+public class YamlFileConfiguration<T>(string path, IDeserializer? deserializer = null, ISerializer? serializer = null)
     : FileConfiguration<T>(path) where T : new() {
 
-    public YamlFileConfiguration(IDeserializer deserializer, ISerializer serializer)
+    private readonly IDeserializer _deserializer = deserializer ?? new DeserializerBuilder().Build();
+    private readonly ISerializer _serializer = serializer ?? new SerializerBuilder().Build();
+
+    public YamlFileConfiguration(IDeserializer? deserializer = null, ISerializer? serializer = null)
         : this(GetPath(), deserializer, serializer) {
         // no-op
     }
 
-    public static Task<YamlFileConfiguration<T>> LoadAsync(IDeserializer deserializer, ISerializer serializer,
-        CancellationToken cancellationToken = default) {
+    public static Task<YamlFileConfiguration<T>> LoadAsync(IDeserializer? deserializer = null,
+        ISerializer? serializer = null, CancellationToken cancellationToken = default) {
         return LoadAsync(GetPath(), deserializer, serializer, cancellationToken);
     }
 
-    public static async Task<YamlFileConfiguration<T>> LoadAsync(string path, IDeserializer deserializer,
-        ISerializer serializer, CancellationToken cancellationToken = default) {
+    public static async Task<YamlFileConfiguration<T>> LoadAsync(string path, IDeserializer? deserializer = null,
+        ISerializer? serializer = null, CancellationToken cancellationToken = default) {
         var configuration = new YamlFileConfiguration<T>(path, deserializer, serializer);
         await configuration.LoadAsync(cancellationToken).ConfigureAwait(false);
         return configuration;
@@ -28,7 +31,7 @@ public class YamlFileConfiguration<T>(string path, IDeserializer deserializer, I
 
         await using var stream = System.IO.File.Open(FilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
         using var streamReader = new StreamReader(stream);
-        var value = deserializer.Deserialize<T>(streamReader);
+        var value = _deserializer.Deserialize<T>(streamReader);
         if (value == null) {
             throw new YamlException($"Failed to deserialize {typeof(T).FullName}.");
         }
@@ -46,7 +49,7 @@ public class YamlFileConfiguration<T>(string path, IDeserializer deserializer, I
 
         await using var stream = System.IO.File.Open(FilePath, FileMode.Create, FileAccess.Write, FileShare.None);
         await using var streamWriter = new StreamWriter(stream);
-        serializer.Serialize(streamWriter, value, typeof(T));
+        _serializer.Serialize(streamWriter, value, typeof(T));
     }
 
     private static string GetPath() {
