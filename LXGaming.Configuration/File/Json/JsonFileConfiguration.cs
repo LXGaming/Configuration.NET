@@ -15,7 +15,7 @@ public class JsonFileConfiguration<T>(string path, JsonSerializerOptions? option
     }
 
     public static async Task<JsonFileConfiguration<T>> LoadAsync(string path, JsonSerializerOptions? options = null,
-        CancellationToken cancellationToken = default)  {
+        CancellationToken cancellationToken = default) {
         var configuration = new JsonFileConfiguration<T>(path, options);
         await configuration.LoadAsync(cancellationToken).ConfigureAwait(false);
         return configuration;

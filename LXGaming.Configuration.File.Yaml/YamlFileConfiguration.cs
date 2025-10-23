@@ -13,7 +13,7 @@ public class YamlFileConfiguration<T>(string path, IDeserializer deserializer, I
 
     public static Task<YamlFileConfiguration<T>> LoadAsync(IDeserializer deserializer, ISerializer serializer,
         CancellationToken cancellationToken = default) {
-        return LoadAsync(GetPath(),  deserializer, serializer, cancellationToken);
+        return LoadAsync(GetPath(), deserializer, serializer, cancellationToken);
     }
 
     public static async Task<YamlFileConfiguration<T>> LoadAsync(string path, IDeserializer deserializer,
