@@ -46,7 +46,7 @@ public class YamlFileConfigurationTest {
     [Test]
     public void TestCancelledLoad() {
         // Attempt to load configuration
-        using var configuration = new YamlFileConfiguration<Config>();
+        using var configuration = new YamlFileConfiguration<Config>(new YamlFileConfigurationOptions());
         var cancellationToken = new CancellationToken(true);
         Assert.ThrowsAsync<TaskCanceledException>(async () => await configuration.LoadAsync(cancellationToken));
         Assert.That(configuration.Value, Is.Null);

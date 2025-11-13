@@ -3,25 +3,24 @@ using YamlDotNet.Serialization;
 
 namespace LXGaming.Configuration.File.Yaml;
 
-public class YamlFileConfiguration<T>(string path, IDeserializer? deserializer = null, ISerializer? serializer = null)
+public class YamlFileConfiguration<T>(string path, YamlFileConfigurationOptions options)
     : FileConfiguration<T>(path) where T : new() {
 
-    private readonly IDeserializer _deserializer = deserializer ?? new DeserializerBuilder().Build();
-    private readonly ISerializer _serializer = serializer ?? new SerializerBuilder().Build();
+    private readonly IDeserializer _deserializer = options.Deserializer ?? new DeserializerBuilder().Build();
+    private readonly ISerializer _serializer = options.Serializer ?? new SerializerBuilder().Build();
 
-    public YamlFileConfiguration(IDeserializer? deserializer = null, ISerializer? serializer = null)
-        : this(GetPath(), deserializer, serializer) {
+    public YamlFileConfiguration(YamlFileConfigurationOptions options) : this(GetPath(), options) {
         // no-op
     }
 
-    public static Task<YamlFileConfiguration<T>> LoadAsync(IDeserializer? deserializer = null,
-        ISerializer? serializer = null, CancellationToken cancellationToken = default) {
-        return LoadAsync(GetPath(), deserializer, serializer, cancellationToken);
+    public static Task<YamlFileConfiguration<T>> LoadAsync(YamlFileConfigurationOptions? options = null,
+        CancellationToken cancellationToken = default) {
+        return LoadAsync(GetPath(), options, cancellationToken);
     }
 
-    public static async Task<YamlFileConfiguration<T>> LoadAsync(string path, IDeserializer? deserializer = null,
-        ISerializer? serializer = null, CancellationToken cancellationToken = default) {
-        var configuration = new YamlFileConfiguration<T>(path, deserializer, serializer);
+    public static async Task<YamlFileConfiguration<T>> LoadAsync(string path,
+        YamlFileConfigurationOptions? options = null, CancellationToken cancellationToken = default) {
+        var configuration = new YamlFileConfiguration<T>(path, options ?? new YamlFileConfigurationOptions());
         await configuration.LoadAsync(cancellationToken).ConfigureAwait(false);
         return configuration;
     }

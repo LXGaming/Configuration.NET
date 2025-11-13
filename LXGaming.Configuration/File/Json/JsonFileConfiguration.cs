@@ -2,21 +2,23 @@
 
 namespace LXGaming.Configuration.File.Json;
 
-public class JsonFileConfiguration<T>(string path, JsonSerializerOptions? options = null)
+public class JsonFileConfiguration<T>(string path, JsonFileConfigurationOptions options)
     : FileConfiguration<T>(path) where T : new() {
 
-    public JsonFileConfiguration(JsonSerializerOptions? options = null) : this(GetPath(), options) {
+    private readonly JsonSerializerOptions? _options = options.Options;
+
+    public JsonFileConfiguration(JsonFileConfigurationOptions options) : this(GetPath(), options) {
         // no-op
     }
 
-    public static Task<JsonFileConfiguration<T>> LoadAsync(JsonSerializerOptions? options = null,
+    public static Task<JsonFileConfiguration<T>> LoadAsync(JsonFileConfigurationOptions? options = null,
         CancellationToken cancellationToken = default) {
         return LoadAsync(GetPath(), options, cancellationToken);
     }
 
-    public static async Task<JsonFileConfiguration<T>> LoadAsync(string path, JsonSerializerOptions? options = null,
-        CancellationToken cancellationToken = default) {
-        var configuration = new JsonFileConfiguration<T>(path, options);
+    public static async Task<JsonFileConfiguration<T>> LoadAsync(string path,
+        JsonFileConfigurationOptions? options = null, CancellationToken cancellationToken = default) {
+        var configuration = new JsonFileConfiguration<T>(path, options ?? new JsonFileConfigurationOptions());
         await configuration.LoadAsync(cancellationToken).ConfigureAwait(false);
         return configuration;
     }
@@ -25,7 +27,7 @@ public class JsonFileConfiguration<T>(string path, JsonSerializerOptions? option
         cancellationToken.ThrowIfCancellationRequested();
 
         await using var stream = System.IO.File.Open(FilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-        var value = await JsonSerializer.DeserializeAsync<T>(stream, options, CancellationToken.None)
+        var value = await JsonSerializer.DeserializeAsync<T>(stream, _options, CancellationToken.None)
             .ConfigureAwait(false);
         if (value == null) {
             throw new JsonException($"Failed to deserialize {typeof(T).FullName}.");
@@ -44,7 +46,7 @@ public class JsonFileConfiguration<T>(string path, JsonSerializerOptions? option
 
         await using var stream = System.IO.File.Open(FilePath, FileMode.Create, FileAccess.Write, FileShare.None);
         // Don't pass the cancellation token as we've just truncated the file.
-        await JsonSerializer.SerializeAsync<T>(stream, value, options, CancellationToken.None);
+        await JsonSerializer.SerializeAsync<T>(stream, value, _options, CancellationToken.None);
     }
 
     private static string GetPath() {

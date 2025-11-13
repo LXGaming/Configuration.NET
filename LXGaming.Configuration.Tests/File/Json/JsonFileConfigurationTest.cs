@@ -46,7 +46,7 @@ public class JsonFileConfigurationTest {
     [Test]
     public void TestCancelledLoad() {
         // Attempt to load configuration
-        using var configuration = new JsonFileConfiguration<Config>();
+        using var configuration = new JsonFileConfiguration<Config>(new JsonFileConfigurationOptions());
         var cancellationToken = new CancellationToken(true);
         Assert.ThrowsAsync<TaskCanceledException>(async () => await configuration.LoadAsync(cancellationToken));
         Assert.That(configuration.Value, Is.Null);
