@@ -2,7 +2,7 @@
 
 namespace LXGaming.Configuration.File.Json;
 
-public class JsonFileConfigurationOptions {
+public class JsonFileConfigurationOptions : FileConfigurationOptions {
 
     public JsonSerializerOptions? Options { get; set; }
 }

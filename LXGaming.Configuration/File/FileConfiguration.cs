@@ -5,6 +5,8 @@ namespace LXGaming.Configuration.File;
 
 public abstract class FileConfiguration<T> : IConfiguration<T> where T : new() {
 
+    public bool Atomic { get; }
+
     public string DirectoryPath { get; }
 
     public string FilePath { get; }
@@ -15,7 +17,7 @@ public abstract class FileConfiguration<T> : IConfiguration<T> where T : new() {
     private readonly SemaphoreSlim _lock;
     private bool _disposed;
 
-    protected FileConfiguration(string path) {
+    protected FileConfiguration(string path, FileConfigurationOptions options) {
         var fullPath = Path.GetFullPath(path);
         var fileName = Path.GetFileName(fullPath);
         if (string.IsNullOrEmpty(fileName)) {
@@ -27,6 +29,7 @@ public abstract class FileConfiguration<T> : IConfiguration<T> where T : new() {
             throw new ArgumentException("Invalid directory name.");
         }
 
+        Atomic = options.Atomic;
         DirectoryPath = directoryName;
         FilePath = fullPath;
 
@@ -70,6 +73,10 @@ public abstract class FileConfiguration<T> : IConfiguration<T> where T : new() {
     protected abstract Task DeserializeAsync(CancellationToken cancellationToken);
 
     protected abstract Task SerializeAsync(CancellationToken cancellationToken);
+
+    protected virtual string GetTempFilePath() {
+        return Path.Combine(DirectoryPath, $"{Guid.NewGuid()}.tmp");
+    }
 
     /// <inheritdoc />
     public void Dispose() {

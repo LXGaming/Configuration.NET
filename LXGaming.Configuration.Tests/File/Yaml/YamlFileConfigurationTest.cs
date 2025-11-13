@@ -8,6 +8,14 @@ namespace LXGaming.Configuration.Tests.File.Yaml;
 public class YamlFileConfigurationTest {
 
     private const string Path = "config.yaml";
+    private static readonly YamlFileConfigurationOptions[] Options = [
+        new() {
+            Atomic = false
+        },
+        new() {
+            Atomic = true
+        }
+    ];
     private string _data;
 
     [SetUp]
@@ -24,18 +32,18 @@ public class YamlFileConfigurationTest {
         return Task.CompletedTask;
     }
 
-    [Test]
-    public async Task TestLoad() {
+    [TestCaseSource(nameof(Options))]
+    public async Task TestLoad(YamlFileConfigurationOptions options) {
         // Load configuration
-        using var configuration = await YamlFileConfiguration<Config>.LoadAsync();
+        using var configuration = await YamlFileConfiguration<Config>.LoadAsync(options);
         // Test generated data
         Assert.That(configuration.Value?.Data, Is.EqualTo(_data));
     }
 
-    [Test]
-    public async Task TestSave() {
+    [TestCaseSource(nameof(Options))]
+    public async Task TestSave(YamlFileConfigurationOptions options) {
         // Load configuration
-        using var configuration = await YamlFileConfiguration<Config>.LoadAsync();
+        using var configuration = await YamlFileConfiguration<Config>.LoadAsync(options);
         // Test generated data
         Assert.That(configuration.Value?.Data, Is.EqualTo(_data));
 
@@ -50,19 +58,19 @@ public class YamlFileConfigurationTest {
         Assert.That(contents, Is.EqualTo(CreateContents(configuration.Value.Data)));
     }
 
-    [Test]
-    public void TestCancelledLoad() {
+    [TestCaseSource(nameof(Options))]
+    public void TestCancelledLoad(YamlFileConfigurationOptions options) {
         // Attempt to load configuration
-        using var configuration = new YamlFileConfiguration<Config>(new YamlFileConfigurationOptions());
+        using var configuration = new YamlFileConfiguration<Config>(options);
         var cancellationToken = new CancellationToken(true);
         Assert.ThrowsAsync<TaskCanceledException>(async () => await configuration.LoadAsync(cancellationToken));
         Assert.That(configuration.Value, Is.Null);
     }
 
-    [Test]
-    public async Task TestCancelledSave() {
+    [TestCaseSource(nameof(Options))]
+    public async Task TestCancelledSave(YamlFileConfigurationOptions options) {
         // Load configuration
-        using var configuration = await YamlFileConfiguration<Config>.LoadAsync();
+        using var configuration = await YamlFileConfiguration<Config>.LoadAsync(options);
         // Test generated data
         Assert.That(configuration.Value?.Data, Is.EqualTo(_data));
 

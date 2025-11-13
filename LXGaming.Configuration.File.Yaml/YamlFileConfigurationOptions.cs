@@ -2,7 +2,7 @@
 
 namespace LXGaming.Configuration.File.Yaml;
 
-public class YamlFileConfigurationOptions {
+public class YamlFileConfigurationOptions : FileConfigurationOptions {
 
     public IDeserializer? Deserializer { get; set; }
 

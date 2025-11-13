@@ -8,6 +8,14 @@ namespace LXGaming.Configuration.Tests.File.Json;
 public class JsonFileConfigurationTest {
 
     private const string Path = "config.json";
+    private static readonly JsonFileConfigurationOptions[] Options = [
+        new() {
+            Atomic = false
+        },
+        new() {
+            Atomic = true
+        }
+    ];
     private string _data;
 
     [SetUp]
@@ -24,18 +32,18 @@ public class JsonFileConfigurationTest {
         return Task.CompletedTask;
     }
 
-    [Test]
-    public async Task TestLoad() {
+    [TestCaseSource(nameof(Options))]
+    public async Task TestLoad(JsonFileConfigurationOptions options) {
         // Load configuration
-        using var configuration = await JsonFileConfiguration<Config>.LoadAsync();
+        using var configuration = await JsonFileConfiguration<Config>.LoadAsync(options);
         // Test generated data
         Assert.That(configuration.Value?.Data, Is.EqualTo(_data));
     }
 
-    [Test]
-    public async Task TestSave() {
+    [TestCaseSource(nameof(Options))]
+    public async Task TestSave(JsonFileConfigurationOptions options) {
         // Load configuration
-        using var configuration = await JsonFileConfiguration<Config>.LoadAsync();
+        using var configuration = await JsonFileConfiguration<Config>.LoadAsync(options);
         // Test generated data
         Assert.That(configuration.Value?.Data, Is.EqualTo(_data));
 
@@ -50,19 +58,19 @@ public class JsonFileConfigurationTest {
         Assert.That(contents, Is.EqualTo(CreateContents(configuration.Value.Data)));
     }
 
-    [Test]
-    public void TestCancelledLoad() {
+    [TestCaseSource(nameof(Options))]
+    public void TestCancelledLoad(JsonFileConfigurationOptions options) {
         // Attempt to load configuration
-        using var configuration = new JsonFileConfiguration<Config>(new JsonFileConfigurationOptions());
+        using var configuration = new JsonFileConfiguration<Config>(options);
         var cancellationToken = new CancellationToken(true);
         Assert.ThrowsAsync<TaskCanceledException>(async () => await configuration.LoadAsync(cancellationToken));
         Assert.That(configuration.Value, Is.Null);
     }
 
-    [Test]
-    public async Task TestCancelledSave() {
+    [TestCaseSource(nameof(Options))]
+    public async Task TestCancelledSave(JsonFileConfigurationOptions options) {
         // Load configuration
-        using var configuration = await JsonFileConfiguration<Config>.LoadAsync();
+        using var configuration = await JsonFileConfiguration<Config>.LoadAsync(options);
         // Test generated data
         Assert.That(configuration.Value?.Data, Is.EqualTo(_data));
 

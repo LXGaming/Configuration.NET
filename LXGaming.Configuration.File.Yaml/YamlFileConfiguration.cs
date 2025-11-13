@@ -5,7 +5,7 @@ using static System.IO.File;
 namespace LXGaming.Configuration.File.Yaml;
 
 public class YamlFileConfiguration<T>(string path, YamlFileConfigurationOptions options)
-    : FileConfiguration<T>(path) where T : new() {
+    : FileConfiguration<T>(path, options) where T : new() {
 
     private readonly IDeserializer _deserializer = options.Deserializer ?? new DeserializerBuilder().Build();
     private readonly ISerializer _serializer = options.Serializer ?? new SerializerBuilder().Build();
@@ -47,9 +47,29 @@ public class YamlFileConfiguration<T>(string path, YamlFileConfigurationOptions 
             throw new InvalidOperationException("Value is unavailable.");
         }
 
-        await using var stream = Open(FilePath, FileMode.Create, FileAccess.Write, FileShare.None);
-        await using var streamWriter = new StreamWriter(stream);
-        _serializer.Serialize(streamWriter, value, typeof(T));
+        if (Atomic) {
+            var tempFilePath = GetTempFilePath();
+            await using (var stream = Open(tempFilePath, FileMode.CreateNew, FileAccess.Write, FileShare.None)) {
+                await using var streamWriter = new StreamWriter(stream);
+                _serializer.Serialize(streamWriter, value, typeof(T));
+            }
+
+            try {
+                Replace(tempFilePath, FilePath, null);
+            } catch (Exception replaceEx) {
+                try {
+                    Delete(tempFilePath);
+                } catch (Exception deleteEx) {
+                    throw new AggregateException(replaceEx, deleteEx);
+                }
+
+                throw;
+            }
+        } else {
+            await using var stream = Open(FilePath, FileMode.Create, FileAccess.Write, FileShare.None);
+            await using var streamWriter = new StreamWriter(stream);
+            _serializer.Serialize(streamWriter, value, typeof(T));
+        }
     }
 
     private static string GetPath() {

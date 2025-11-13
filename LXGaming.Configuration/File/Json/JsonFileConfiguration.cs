@@ -4,7 +4,7 @@ using static System.IO.File;
 namespace LXGaming.Configuration.File.Json;
 
 public class JsonFileConfiguration<T>(string path, JsonFileConfigurationOptions options)
-    : FileConfiguration<T>(path) where T : new() {
+    : FileConfiguration<T>(path, options) where T : new() {
 
     private readonly JsonSerializerOptions? _options = options.Options;
 
@@ -45,9 +45,29 @@ public class JsonFileConfiguration<T>(string path, JsonFileConfigurationOptions 
             throw new InvalidOperationException("Value is unavailable.");
         }
 
-        await using var stream = Open(FilePath, FileMode.Create, FileAccess.Write, FileShare.None);
-        // Don't pass the cancellation token as we've just truncated the file.
-        await JsonSerializer.SerializeAsync<T>(stream, value, _options, CancellationToken.None);
+        if (Atomic) {
+            var tempFilePath = GetTempFilePath();
+            await using (var stream = Open(tempFilePath, FileMode.CreateNew, FileAccess.Write, FileShare.None)) {
+                // Pass the cancellation token as we're writing to a temporary file.
+                await JsonSerializer.SerializeAsync<T>(stream, value, _options, cancellationToken);
+            }
+
+            try {
+                Replace(tempFilePath, FilePath, null);
+            } catch (Exception replaceEx) {
+                try {
+                    Delete(tempFilePath);
+                } catch (Exception deleteEx) {
+                    throw new AggregateException(replaceEx, deleteEx);
+                }
+
+                throw;
+            }
+        } else {
+            await using var stream = Open(FilePath, FileMode.Create, FileAccess.Write, FileShare.None);
+            // Don't pass the cancellation token as we've just truncated the file.
+            await JsonSerializer.SerializeAsync<T>(stream, value, _options, CancellationToken.None);
+        }
     }
 
     private static string GetPath() {
