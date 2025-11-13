@@ -11,11 +11,17 @@ public class JsonFileConfigurationTest {
     private string _data;
 
     [SetUp]
-    public async Task SetupAsync() {
+    public async Task SetUpAsync() {
         // Generate data
         _data = CreateData();
         // Write configuration contents
         await WriteAllTextAsync(Path, CreateContents(_data));
+    }
+
+    [OneTimeTearDown]
+    public Task OneTimeTearDownAsync() {
+        Delete(Path);
+        return Task.CompletedTask;
     }
 
     [Test]
