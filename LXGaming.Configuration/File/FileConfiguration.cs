@@ -1,4 +1,5 @@
 ﻿using LXGaming.Configuration.Generic;
+using static System.IO.File;
 
 namespace LXGaming.Configuration.File;
 
@@ -36,7 +37,7 @@ public abstract class FileConfiguration<T> : IConfiguration<T> where T : new() {
     public async Task LoadAsync(CancellationToken cancellationToken = default) {
         ObjectDisposedException.ThrowIf(_disposed, this);
 
-        if (!System.IO.File.Exists(FilePath)) {
+        if (!Exists(FilePath)) {
             Value ??= new T();
             await SaveAsync(cancellationToken).ConfigureAwait(false);
             return;

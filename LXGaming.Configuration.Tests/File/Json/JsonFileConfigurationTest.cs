@@ -1,6 +1,7 @@
 ﻿using LXGaming.Configuration.File.Json;
 using LXGaming.Configuration.Tests.Models;
 using NUnit.Framework;
+using static System.IO.File;
 
 namespace LXGaming.Configuration.Tests.File.Json;
 
@@ -14,7 +15,7 @@ public class JsonFileConfigurationTest {
         // Generate data
         _data = CreateData();
         // Write configuration contents
-        await System.IO.File.WriteAllTextAsync(Path, CreateContents(_data));
+        await WriteAllTextAsync(Path, CreateContents(_data));
     }
 
     [Test]
@@ -38,7 +39,7 @@ public class JsonFileConfigurationTest {
         await configuration.SaveAsync();
 
         // Read configuration contents
-        var contents = await System.IO.File.ReadAllTextAsync(Path);
+        var contents = await ReadAllTextAsync(Path);
         // Test configuration contents
         Assert.That(contents, Is.EqualTo(CreateContents(configuration.Value.Data)));
     }
@@ -66,7 +67,7 @@ public class JsonFileConfigurationTest {
         Assert.ThrowsAsync<TaskCanceledException>(async () => await configuration.SaveAsync(cancellationToken));
 
         // Read configuration contents
-        var contents = await System.IO.File.ReadAllTextAsync(Path, CancellationToken.None);
+        var contents = await ReadAllTextAsync(Path, CancellationToken.None);
         // Test configuration contents
         Assert.That(contents, Is.EqualTo(CreateContents(_data)));
     }

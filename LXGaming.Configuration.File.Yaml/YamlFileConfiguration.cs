@@ -1,5 +1,6 @@
 ﻿using YamlDotNet.Core;
 using YamlDotNet.Serialization;
+using static System.IO.File;
 
 namespace LXGaming.Configuration.File.Yaml;
 
@@ -28,7 +29,7 @@ public class YamlFileConfiguration<T>(string path, YamlFileConfigurationOptions 
     protected override async Task DeserializeAsync(CancellationToken cancellationToken) {
         cancellationToken.ThrowIfCancellationRequested();
 
-        await using var stream = System.IO.File.Open(FilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+        await using var stream = Open(FilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
         using var streamReader = new StreamReader(stream);
         var value = _deserializer.Deserialize<T>(streamReader);
         if (value == null) {
@@ -46,7 +47,7 @@ public class YamlFileConfiguration<T>(string path, YamlFileConfigurationOptions 
             throw new InvalidOperationException("Value is unavailable.");
         }
 
-        await using var stream = System.IO.File.Open(FilePath, FileMode.Create, FileAccess.Write, FileShare.None);
+        await using var stream = Open(FilePath, FileMode.Create, FileAccess.Write, FileShare.None);
         await using var streamWriter = new StreamWriter(stream);
         _serializer.Serialize(streamWriter, value, typeof(T));
     }

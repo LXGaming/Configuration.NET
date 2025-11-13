@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using static System.IO.File;
 
 namespace LXGaming.Configuration.File.Json;
 
@@ -26,7 +27,7 @@ public class JsonFileConfiguration<T>(string path, JsonFileConfigurationOptions 
     protected override async Task DeserializeAsync(CancellationToken cancellationToken) {
         cancellationToken.ThrowIfCancellationRequested();
 
-        await using var stream = System.IO.File.Open(FilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+        await using var stream = Open(FilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
         var value = await JsonSerializer.DeserializeAsync<T>(stream, _options, CancellationToken.None)
             .ConfigureAwait(false);
         if (value == null) {
@@ -44,7 +45,7 @@ public class JsonFileConfiguration<T>(string path, JsonFileConfigurationOptions 
             throw new InvalidOperationException("Value is unavailable.");
         }
 
-        await using var stream = System.IO.File.Open(FilePath, FileMode.Create, FileAccess.Write, FileShare.None);
+        await using var stream = Open(FilePath, FileMode.Create, FileAccess.Write, FileShare.None);
         // Don't pass the cancellation token as we've just truncated the file.
         await JsonSerializer.SerializeAsync<T>(stream, value, _options, CancellationToken.None);
     }
