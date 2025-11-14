@@ -5,9 +5,10 @@ using static System.IO.File;
 
 namespace LXGaming.Configuration.Tests.File.Json;
 
-public class JsonFileConfigurationTest {
+public class JsonFileConfigurationTest : FileConfigurationTest {
 
-    private const string Path = "config.json";
+    protected override string Path => "config.json";
+
     private static readonly JsonFileConfigurationOptions[] Options = [
         new() {
             Atomic = false
@@ -16,28 +17,13 @@ public class JsonFileConfigurationTest {
             Atomic = true
         }
     ];
-    private string _data;
-
-    [SetUp]
-    public async Task SetUpAsync() {
-        // Generate data
-        _data = CreateData();
-        // Write configuration contents
-        await WriteAllTextAsync(Path, CreateContents(_data));
-    }
-
-    [OneTimeTearDown]
-    public Task OneTimeTearDownAsync() {
-        Delete(Path);
-        return Task.CompletedTask;
-    }
 
     [TestCaseSource(nameof(Options))]
     public async Task TestLoad(JsonFileConfigurationOptions options) {
         // Load configuration
         using var configuration = await JsonFileConfiguration<Config>.LoadAsync(options);
         // Test generated data
-        Assert.That(configuration.Value?.Data, Is.EqualTo(_data));
+        Assert.That(configuration.Value?.Data, Is.EqualTo(Data));
     }
 
     [TestCaseSource(nameof(Options))]
@@ -45,7 +31,7 @@ public class JsonFileConfigurationTest {
         // Load configuration
         using var configuration = await JsonFileConfiguration<Config>.LoadAsync(options);
         // Test generated data
-        Assert.That(configuration.Value?.Data, Is.EqualTo(_data));
+        Assert.That(configuration.Value?.Data, Is.EqualTo(Data));
 
         // Regenerate data
         configuration.Value.Data = CreateData();
@@ -72,7 +58,7 @@ public class JsonFileConfigurationTest {
         // Load configuration
         using var configuration = await JsonFileConfiguration<Config>.LoadAsync(options);
         // Test generated data
-        Assert.That(configuration.Value?.Data, Is.EqualTo(_data));
+        Assert.That(configuration.Value?.Data, Is.EqualTo(Data));
 
         // Regenerate data
         configuration.Value.Data = CreateData();
@@ -83,14 +69,10 @@ public class JsonFileConfigurationTest {
         // Read configuration contents
         var contents = await ReadAllTextAsync(Path, CancellationToken.None);
         // Test configuration contents
-        Assert.That(contents, Is.EqualTo(CreateContents(_data)));
+        Assert.That(contents, Is.EqualTo(CreateContents(Data)));
     }
 
-    private static string CreateContents(string data) {
+    protected override string CreateContents(string data) {
         return $"{{\"data\":\"{data}\"}}";
-    }
-
-    private static string CreateData() {
-        return Guid.NewGuid().ToString();
     }
 }
