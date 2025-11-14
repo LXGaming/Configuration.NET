@@ -52,17 +52,7 @@ public class JsonFileConfiguration<T>(string path, JsonFileConfigurationOptions 
                 await JsonSerializer.SerializeAsync<T>(stream, value, _options, cancellationToken);
             }
 
-            try {
-                Replace(tempFilePath, FilePath, null);
-            } catch (Exception replaceEx) {
-                try {
-                    Delete(tempFilePath);
-                } catch (Exception deleteEx) {
-                    throw new AggregateException(replaceEx, deleteEx);
-                }
-
-                throw;
-            }
+            ReplaceInternal(tempFilePath);
         } else {
             await using var stream = Open(FilePath, FileMode.Create, FileAccess.Write, FileShare.None);
             // Don't pass the cancellation token as we've just truncated the file.

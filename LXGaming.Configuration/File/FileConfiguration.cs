@@ -78,6 +78,20 @@ public abstract class FileConfiguration<T> : IConfiguration<T> where T : new() {
         return Path.Combine(DirectoryPath, $"{Guid.NewGuid()}.tmp");
     }
 
+    protected void ReplaceInternal(string tempFilePath) {
+        try {
+            Replace(tempFilePath, FilePath, null);
+        } catch (Exception replaceEx) {
+            try {
+                Delete(tempFilePath);
+            } catch (Exception deleteEx) {
+                throw new AggregateException(replaceEx, deleteEx);
+            }
+
+            throw;
+        }
+    }
+
     /// <inheritdoc />
     public void Dispose() {
         Dispose(true);

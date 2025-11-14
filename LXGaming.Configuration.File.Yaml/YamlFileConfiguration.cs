@@ -54,17 +54,7 @@ public class YamlFileConfiguration<T>(string path, YamlFileConfigurationOptions 
                 _serializer.Serialize(streamWriter, value, typeof(T));
             }
 
-            try {
-                Replace(tempFilePath, FilePath, null);
-            } catch (Exception replaceEx) {
-                try {
-                    Delete(tempFilePath);
-                } catch (Exception deleteEx) {
-                    throw new AggregateException(replaceEx, deleteEx);
-                }
-
-                throw;
-            }
+            ReplaceInternal(tempFilePath);
         } else {
             await using var stream = Open(FilePath, FileMode.Create, FileAccess.Write, FileShare.None);
             await using var streamWriter = new StreamWriter(stream);
