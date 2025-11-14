@@ -9,6 +9,8 @@ public abstract class FileConfiguration<T> : IConfiguration<T> where T : new() {
 
     public string DirectoryPath { get; }
 
+    public string FileName { get; }
+
     public string FilePath { get; }
 
     /// <inheritdoc />
@@ -20,6 +22,7 @@ public abstract class FileConfiguration<T> : IConfiguration<T> where T : new() {
     protected FileConfiguration(string path, FileConfigurationOptions options) {
         var fullPath = Path.GetFullPath(path);
         var fileName = Path.GetFileName(fullPath);
+        var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
         if (string.IsNullOrEmpty(fileName)) {
             throw new ArgumentException("Invalid file name.");
         }
@@ -31,6 +34,7 @@ public abstract class FileConfiguration<T> : IConfiguration<T> where T : new() {
 
         Atomic = options.Atomic;
         DirectoryPath = directoryName;
+        FileName = !string.IsNullOrWhiteSpace(fileNameWithoutExtension) ? fileNameWithoutExtension : fileName;
         FilePath = fullPath;
 
         _lock = new SemaphoreSlim(1, 1);
@@ -75,7 +79,7 @@ public abstract class FileConfiguration<T> : IConfiguration<T> where T : new() {
     protected abstract Task SerializeAsync(CancellationToken cancellationToken);
 
     protected virtual string GetTempFilePath() {
-        return Path.Combine(DirectoryPath, $"{Guid.NewGuid()}.tmp");
+        return Path.Combine(DirectoryPath, $"{FileName}-{Guid.NewGuid()}.tmp");
     }
 
     protected void MoveOrReplace(string tempFilePath) {
