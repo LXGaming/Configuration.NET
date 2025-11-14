@@ -78,9 +78,13 @@ public abstract class FileConfiguration<T> : IConfiguration<T> where T : new() {
         return Path.Combine(DirectoryPath, $"{Guid.NewGuid()}.tmp");
     }
 
-    protected void ReplaceInternal(string tempFilePath) {
+    protected void MoveOrReplace(string tempFilePath) {
         try {
-            Replace(tempFilePath, FilePath, null);
+            if (Exists(FilePath)) {
+                Replace(tempFilePath, FilePath, null);
+            } else {
+                Move(tempFilePath, FilePath);
+            }
         } catch (Exception replaceEx) {
             try {
                 Delete(tempFilePath);
