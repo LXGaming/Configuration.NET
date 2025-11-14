@@ -78,25 +78,43 @@ public abstract class FileConfiguration<T> : IConfiguration<T> where T : new() {
 
     protected abstract Task SerializeAsync(CancellationToken cancellationToken);
 
+    protected virtual string GetBackupFilePath() {
+        return Path.Combine(DirectoryPath, $"{FileName}-{Guid.NewGuid()}.bak");
+    }
+
     protected virtual string GetTempFilePath() {
         return Path.Combine(DirectoryPath, $"{FileName}-{Guid.NewGuid()}.tmp");
     }
 
     protected void MoveOrReplace(string tempFilePath) {
-        try {
-            if (Exists(FilePath)) {
-                Replace(tempFilePath, FilePath, null);
-            } else {
-                Move(tempFilePath, FilePath);
-            }
-        } catch (Exception replaceEx) {
+        if (Exists(FilePath)) {
+            var backupFilePath = GetBackupFilePath();
+
             try {
-                Delete(tempFilePath);
-            } catch (Exception deleteEx) {
-                throw new AggregateException(replaceEx, deleteEx);
+                Replace(tempFilePath, FilePath, backupFilePath);
+            } catch (Exception replaceEx) {
+                try {
+                    Delete(tempFilePath);
+                } catch (Exception deleteEx) {
+                    throw new AggregateException(replaceEx, deleteEx);
+                }
+
+                throw;
             }
 
-            throw;
+            Delete(backupFilePath);
+        } else {
+            try {
+                Move(tempFilePath, FilePath);
+            } catch (Exception moveEx) {
+                try {
+                    Delete(tempFilePath);
+                } catch (Exception deleteEx) {
+                    throw new AggregateException(moveEx, deleteEx);
+                }
+
+                throw;
+            }
         }
     }
 
