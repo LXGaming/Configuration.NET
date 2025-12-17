@@ -129,10 +129,10 @@ public abstract class FileConfiguration<T> : IConfiguration<T> where T : new() {
             return;
         }
 
+        _disposed = true;
+
         if (disposing) {
             _lock.Dispose();
         }
-
-        _disposed = true;
     }
 }
