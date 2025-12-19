@@ -49,14 +49,16 @@ public class JsonFileConfiguration<T>(string path, JsonFileConfigurationOptions 
             var tempFilePath = GetTempFilePath();
             await using (var stream = Open(tempFilePath, FileMode.CreateNew, FileAccess.Write, FileShare.None)) {
                 // Pass the cancellation token as we're writing to a temporary file.
-                await JsonSerializer.SerializeAsync<T>(stream, value, _options, cancellationToken);
+                await JsonSerializer.SerializeAsync<T>(stream, value, _options, cancellationToken)
+                    .ConfigureAwait(false);
             }
 
             MoveOrReplace(tempFilePath);
         } else {
             await using var stream = Open(FilePath, FileMode.Create, FileAccess.Write, FileShare.None);
             // Don't pass the cancellation token as we've just truncated the file.
-            await JsonSerializer.SerializeAsync<T>(stream, value, _options, CancellationToken.None);
+            await JsonSerializer.SerializeAsync<T>(stream, value, _options, CancellationToken.None)
+                .ConfigureAwait(false);
         }
     }
 
