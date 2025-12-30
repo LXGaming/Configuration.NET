@@ -1,4 +1,4 @@
-﻿namespace LXGaming.Configuration.File;
+namespace LXGaming.Configuration.File;
 
 public class FileConfigurationOptions {
 

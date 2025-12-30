@@ -1,4 +1,4 @@
-﻿using LXGaming.Configuration.Generic;
+using LXGaming.Configuration.Generic;
 
 namespace LXGaming.Configuration.Memory;
 

@@ -1,4 +1,4 @@
-﻿using LXGaming.Configuration.File.Json;
+using LXGaming.Configuration.File.Json;
 using LXGaming.Configuration.Tests.Models;
 using NUnit.Framework;
 using static System.IO.File;

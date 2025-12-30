@@ -1,4 +1,4 @@
-﻿using System.Text.Json;
+using System.Text.Json;
 using static System.IO.File;
 
 namespace LXGaming.Configuration.File.Json;

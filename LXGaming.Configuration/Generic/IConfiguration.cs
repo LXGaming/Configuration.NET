@@ -1,4 +1,4 @@
-﻿namespace LXGaming.Configuration.Generic;
+namespace LXGaming.Configuration.Generic;
 
 /// <summary>
 /// Represents a generic configuration.

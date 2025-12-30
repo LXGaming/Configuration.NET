@@ -1,4 +1,4 @@
-﻿namespace LXGaming.Configuration;
+namespace LXGaming.Configuration;
 
 /// <summary>
 /// Represents a configuration.

@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 
 namespace LXGaming.Configuration.Tests.File;
 using static System.IO.File;

@@ -1,4 +1,4 @@
-﻿using LXGaming.Configuration.Generic;
+using LXGaming.Configuration.Generic;
 using static System.IO.File;
 
 namespace LXGaming.Configuration.File;
