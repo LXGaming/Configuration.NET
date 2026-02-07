@@ -20,7 +20,13 @@ public class JsonFileConfiguration<T>(string path, JsonFileConfigurationOptions 
     public static async Task<JsonFileConfiguration<T>> LoadAsync(string path,
         JsonFileConfigurationOptions? options = null, CancellationToken cancellationToken = default) {
         var configuration = new JsonFileConfiguration<T>(path, options ?? new JsonFileConfigurationOptions());
-        await configuration.LoadAsync(cancellationToken).ConfigureAwait(false);
+        try {
+            await configuration.LoadAsync(cancellationToken).ConfigureAwait(false);
+        } catch (Exception) {
+            configuration.Dispose();
+            throw;
+        }
+
         return configuration;
     }
 

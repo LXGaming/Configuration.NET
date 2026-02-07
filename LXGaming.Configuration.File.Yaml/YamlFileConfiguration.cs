@@ -22,7 +22,13 @@ public class YamlFileConfiguration<T>(string path, YamlFileConfigurationOptions 
     public static async Task<YamlFileConfiguration<T>> LoadAsync(string path,
         YamlFileConfigurationOptions? options = null, CancellationToken cancellationToken = default) {
         var configuration = new YamlFileConfiguration<T>(path, options ?? new YamlFileConfigurationOptions());
-        await configuration.LoadAsync(cancellationToken).ConfigureAwait(false);
+        try {
+            await configuration.LoadAsync(cancellationToken).ConfigureAwait(false);
+        } catch (Exception) {
+            configuration.Dispose();
+            throw;
+        }
+
         return configuration;
     }
 
