@@ -2,7 +2,7 @@ using LXGaming.Configuration.Generic;
 
 namespace LXGaming.Configuration.Memory;
 
-public class MemoryConfiguration<T> : IConfiguration<T> where T : new() {
+public sealed class MemoryConfiguration<T> : IConfiguration<T> where T : new() {
 
     /// <inheritdoc />
     public T? Value { get; } = new();
@@ -19,6 +19,6 @@ public class MemoryConfiguration<T> : IConfiguration<T> where T : new() {
 
     /// <inheritdoc />
     public void Dispose() {
-        GC.SuppressFinalize(this);
+        // no-op
     }
 }
