@@ -1,6 +1,7 @@
 using LXGaming.Configuration.File.Yaml;
 using LXGaming.Configuration.Tests.Models;
 using NUnit.Framework;
+using YamlDotNet.Core;
 using static System.IO.File;
 
 namespace LXGaming.Configuration.Tests.File.Yaml;
@@ -65,6 +66,34 @@ public class YamlFileConfigurationTest : FileConfigurationTest {
         // Attempt to save configuration
         var cancellationToken = new CancellationToken(true);
         Assert.ThrowsAsync<TaskCanceledException>(async () => await configuration.SaveAsync(cancellationToken));
+
+        // Read configuration contents
+        var contents = await ReadAllTextAsync(Path, CancellationToken.None);
+        // Test configuration contents
+        Assert.That(contents, Is.EqualTo(CreateContents(Data)));
+    }
+
+    [TestCaseSource(nameof(Options))]
+    public async Task TestNullLoadAsync(YamlFileConfigurationOptions options) {
+        // Write empty configuration
+        await Create(Path).DisposeAsync();
+
+        // Attempt to load configuration
+        Assert.ThrowsAsync<YamlException>(async () => {
+            using var configuration = await YamlFileConfiguration<Config>.LoadAsync(options);
+        });
+
+        // Read configuration contents
+        var contents = await ReadAllTextAsync(Path, CancellationToken.None);
+        // Test configuration contents
+        Assert.That(contents, Is.Empty);
+    }
+
+    [TestCaseSource(nameof(Options))]
+    public async Task TestNullSaveAsync(YamlFileConfigurationOptions options) {
+        // Attempt to save configuration
+        using var configuration = new YamlFileConfiguration<Config>(options);
+        Assert.ThrowsAsync<InvalidOperationException>(async () => await configuration.SaveAsync());
 
         // Read configuration contents
         var contents = await ReadAllTextAsync(Path, CancellationToken.None);

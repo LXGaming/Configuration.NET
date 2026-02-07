@@ -1,3 +1,4 @@
+using System.Text.Json;
 using LXGaming.Configuration.File.Json;
 using LXGaming.Configuration.Tests.Models;
 using NUnit.Framework;
@@ -65,6 +66,34 @@ public class JsonFileConfigurationTest : FileConfigurationTest {
         // Attempt to save configuration
         var cancellationToken = new CancellationToken(true);
         Assert.ThrowsAsync<TaskCanceledException>(async () => await configuration.SaveAsync(cancellationToken));
+
+        // Read configuration contents
+        var contents = await ReadAllTextAsync(Path, CancellationToken.None);
+        // Test configuration contents
+        Assert.That(contents, Is.EqualTo(CreateContents(Data)));
+    }
+
+    [TestCaseSource(nameof(Options))]
+    public async Task TestNullLoadAsync(JsonFileConfigurationOptions options) {
+        // Write empty configuration
+        await Create(Path).DisposeAsync();
+
+        // Attempt to load configuration
+        Assert.ThrowsAsync<JsonException>(async () => {
+            using var configuration = await JsonFileConfiguration<Config>.LoadAsync(options);
+        });
+
+        // Read configuration contents
+        var contents = await ReadAllTextAsync(Path, CancellationToken.None);
+        // Test configuration contents
+        Assert.That(contents, Is.Empty);
+    }
+
+    [TestCaseSource(nameof(Options))]
+    public async Task TestNullSaveAsync(JsonFileConfigurationOptions options) {
+        // Attempt to save configuration
+        using var configuration = new JsonFileConfiguration<Config>(options);
+        Assert.ThrowsAsync<InvalidOperationException>(async () => await configuration.SaveAsync());
 
         // Read configuration contents
         var contents = await ReadAllTextAsync(Path, CancellationToken.None);
