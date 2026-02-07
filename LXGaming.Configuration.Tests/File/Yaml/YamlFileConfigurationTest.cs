@@ -19,7 +19,7 @@ public class YamlFileConfigurationTest : FileConfigurationTest {
     ];
 
     [TestCaseSource(nameof(Options))]
-    public async Task TestLoad(YamlFileConfigurationOptions options) {
+    public async Task TestLoadAsync(YamlFileConfigurationOptions options) {
         // Load configuration
         using var configuration = await YamlFileConfiguration<Config>.LoadAsync(options);
         // Test generated data
@@ -27,7 +27,7 @@ public class YamlFileConfigurationTest : FileConfigurationTest {
     }
 
     [TestCaseSource(nameof(Options))]
-    public async Task TestSave(YamlFileConfigurationOptions options) {
+    public async Task TestSaveAsync(YamlFileConfigurationOptions options) {
         // Load configuration
         using var configuration = await YamlFileConfiguration<Config>.LoadAsync(options);
         // Test generated data
@@ -54,7 +54,7 @@ public class YamlFileConfigurationTest : FileConfigurationTest {
     }
 
     [TestCaseSource(nameof(Options))]
-    public async Task TestCancelledSave(YamlFileConfigurationOptions options) {
+    public async Task TestCancelledSaveAsync(YamlFileConfigurationOptions options) {
         // Load configuration
         using var configuration = await YamlFileConfiguration<Config>.LoadAsync(options);
         // Test generated data

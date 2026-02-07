@@ -19,7 +19,7 @@ public class JsonFileConfigurationTest : FileConfigurationTest {
     ];
 
     [TestCaseSource(nameof(Options))]
-    public async Task TestLoad(JsonFileConfigurationOptions options) {
+    public async Task TestLoadAsync(JsonFileConfigurationOptions options) {
         // Load configuration
         using var configuration = await JsonFileConfiguration<Config>.LoadAsync(options);
         // Test generated data
@@ -27,7 +27,7 @@ public class JsonFileConfigurationTest : FileConfigurationTest {
     }
 
     [TestCaseSource(nameof(Options))]
-    public async Task TestSave(JsonFileConfigurationOptions options) {
+    public async Task TestSaveAsync(JsonFileConfigurationOptions options) {
         // Load configuration
         using var configuration = await JsonFileConfiguration<Config>.LoadAsync(options);
         // Test generated data
@@ -54,7 +54,7 @@ public class JsonFileConfigurationTest : FileConfigurationTest {
     }
 
     [TestCaseSource(nameof(Options))]
-    public async Task TestCancelledSave(JsonFileConfigurationOptions options) {
+    public async Task TestCancelledSaveAsync(JsonFileConfigurationOptions options) {
         // Load configuration
         using var configuration = await JsonFileConfiguration<Config>.LoadAsync(options);
         // Test generated data
