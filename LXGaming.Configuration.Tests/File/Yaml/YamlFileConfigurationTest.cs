@@ -46,11 +46,11 @@ public class YamlFileConfigurationTest : FileConfigurationTest {
     }
 
     [TestCaseSource(nameof(Options))]
-    public void TestCancelledLoad(YamlFileConfigurationOptions options) {
+    public async Task TestCancelledLoadAsync(YamlFileConfigurationOptions options) {
         // Attempt to load configuration
         using var configuration = new YamlFileConfiguration<Config>(options);
         var cancellationToken = new CancellationToken(true);
-        Assert.ThrowsAsync<TaskCanceledException>(async () => await configuration.LoadAsync(cancellationToken));
+        await Assert.ThrowsAsync<TaskCanceledException>(async () => await configuration.LoadAsync(cancellationToken));
         Assert.That(configuration.Value, Is.Null);
     }
 
@@ -65,7 +65,7 @@ public class YamlFileConfigurationTest : FileConfigurationTest {
         configuration.Value.Data = CreateData();
         // Attempt to save configuration
         var cancellationToken = new CancellationToken(true);
-        Assert.ThrowsAsync<TaskCanceledException>(async () => await configuration.SaveAsync(cancellationToken));
+        await Assert.ThrowsAsync<TaskCanceledException>(async () => await configuration.SaveAsync(cancellationToken));
 
         // Read configuration contents
         var contents = await ReadAllTextAsync(Path, CancellationToken.None);
@@ -79,7 +79,7 @@ public class YamlFileConfigurationTest : FileConfigurationTest {
         await Create(Path).DisposeAsync();
 
         // Attempt to load configuration
-        Assert.ThrowsAsync<YamlException>(async () => {
+        await Assert.ThrowsAsync<YamlException>(async () => {
             using var configuration = await YamlFileConfiguration<Config>.LoadAsync(options);
         });
 
@@ -93,7 +93,7 @@ public class YamlFileConfigurationTest : FileConfigurationTest {
     public async Task TestNullSaveAsync(YamlFileConfigurationOptions options) {
         // Attempt to save configuration
         using var configuration = new YamlFileConfiguration<Config>(options);
-        Assert.ThrowsAsync<InvalidOperationException>(async () => await configuration.SaveAsync());
+        await Assert.ThrowsAsync<InvalidOperationException>(async () => await configuration.SaveAsync());
 
         // Read configuration contents
         var contents = await ReadAllTextAsync(Path, CancellationToken.None);
