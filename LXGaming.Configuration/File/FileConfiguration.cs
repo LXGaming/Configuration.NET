@@ -5,13 +5,16 @@ namespace LXGaming.Configuration.File;
 
 public abstract class FileConfiguration<T> : IConfiguration<T> where T : new() {
 
-    public bool Atomic { get; }
-
     public string DirectoryPath { get; }
 
     public string FileName { get; }
 
     public string FilePath { get; }
+
+    /// <summary>
+    /// Gets a value indicating whether file operations should be performed atomically.
+    /// </summary>
+    public bool IsAtomic { get; }
 
     /// <inheritdoc />
     public T? Value { get; protected set; }
@@ -32,10 +35,10 @@ public abstract class FileConfiguration<T> : IConfiguration<T> where T : new() {
             throw new ArgumentException("Invalid directory name.");
         }
 
-        Atomic = options.Atomic;
         DirectoryPath = directoryName;
         FileName = !string.IsNullOrWhiteSpace(fileNameWithoutExtension) ? fileNameWithoutExtension : fileName;
         FilePath = fullPath;
+        IsAtomic = options.IsAtomic;
 
         _lock = new SemaphoreSlim(1, 1);
     }

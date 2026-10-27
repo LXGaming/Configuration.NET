@@ -53,7 +53,7 @@ public class YamlFileConfiguration<T>(string path, YamlFileConfigurationOptions 
             throw new InvalidOperationException("Value is unavailable.");
         }
 
-        if (Atomic) {
+        if (IsAtomic) {
             var tempFilePath = GetTempFilePath();
             await using (var stream = Open(tempFilePath, FileMode.CreateNew, FileAccess.Write, FileShare.None)) {
                 await using var streamWriter = new StreamWriter(stream);

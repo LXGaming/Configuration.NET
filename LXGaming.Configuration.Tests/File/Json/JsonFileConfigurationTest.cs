@@ -12,10 +12,10 @@ public class JsonFileConfigurationTest : FileConfigurationTest {
 
     private static readonly JsonFileConfigurationOptions[] Options = [
         new() {
-            Atomic = false
+            IsAtomic = false
         },
         new() {
-            Atomic = true
+            IsAtomic = true
         }
     ];
 

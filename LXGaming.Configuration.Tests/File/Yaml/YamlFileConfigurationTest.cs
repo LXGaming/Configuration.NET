@@ -12,10 +12,10 @@ public class YamlFileConfigurationTest : FileConfigurationTest {
 
     private static readonly YamlFileConfigurationOptions[] Options = [
         new() {
-            Atomic = false
+            IsAtomic = false
         },
         new() {
-            Atomic = true
+            IsAtomic = true
         }
     ];
 

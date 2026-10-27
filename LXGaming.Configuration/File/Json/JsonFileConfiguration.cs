@@ -51,7 +51,7 @@ public class JsonFileConfiguration<T>(string path, JsonFileConfigurationOptions 
             throw new InvalidOperationException("Value is unavailable.");
         }
 
-        if (Atomic) {
+        if (IsAtomic) {
             var tempFilePath = GetTempFilePath();
             await using (var stream = Open(tempFilePath, FileMode.CreateNew, FileAccess.Write, FileShare.None)) {
                 // Pass the cancellation token as we're writing to a temporary file.
