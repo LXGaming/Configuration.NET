@@ -16,6 +16,12 @@ public class JsonFileConfigurationTest : FileConfigurationTest {
         },
         new() {
             IsAtomic = true
+        },
+        new() {
+            IsReadOnly = false
+        },
+        new() {
+            IsReadOnly = true
         }
     ];
 
@@ -37,12 +43,16 @@ public class JsonFileConfigurationTest : FileConfigurationTest {
         // Regenerate data
         configuration.Value.Data = CreateData();
         // Save configuration
-        await configuration.SaveAsync();
+        if (options.IsReadOnly) {
+            await Assert.ThrowsAsync<InvalidOperationException>(async () => await configuration.SaveAsync());
+        } else {
+            await Assert.DoesNotThrowAsync(async () => await configuration.SaveAsync());
+        }
 
         // Read configuration contents
         var contents = await ReadAllTextAsync(Path);
         // Test configuration contents
-        Assert.That(contents, Is.EqualTo(CreateContents(configuration.Value.Data)));
+        Assert.That(contents, Is.EqualTo(CreateContents(options.IsReadOnly ? Data : configuration.Value.Data)));
     }
 
     [TestCaseSource(nameof(Options))]
@@ -65,7 +75,8 @@ public class JsonFileConfigurationTest : FileConfigurationTest {
         configuration.Value.Data = CreateData();
         // Attempt to save configuration
         var cancellationToken = new CancellationToken(true);
-        await Assert.ThrowsAsync<TaskCanceledException>(async () => await configuration.SaveAsync(cancellationToken));
+        var exceptionType = options.IsReadOnly ? typeof(InvalidOperationException) : typeof(TaskCanceledException);
+        await Assert.ThrowsAsync(exceptionType, async () => await configuration.SaveAsync(cancellationToken));
 
         // Read configuration contents
         var contents = await ReadAllTextAsync(Path, CancellationToken.None);

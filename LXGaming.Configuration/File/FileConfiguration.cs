@@ -17,6 +17,9 @@ public abstract class FileConfiguration<T> : IConfiguration<T> where T : new() {
     public bool IsAtomic { get; }
 
     /// <inheritdoc />
+    public bool IsReadOnly { get; }
+
+    /// <inheritdoc />
     public T? Value { get; protected set; }
 
     private readonly SemaphoreSlim _lock;
@@ -39,6 +42,7 @@ public abstract class FileConfiguration<T> : IConfiguration<T> where T : new() {
         FileName = !string.IsNullOrWhiteSpace(fileNameWithoutExtension) ? fileNameWithoutExtension : fileName;
         FilePath = fullPath;
         IsAtomic = options.IsAtomic;
+        IsReadOnly = options.IsReadOnly;
 
         _lock = new SemaphoreSlim(1, 1);
     }
@@ -64,6 +68,10 @@ public abstract class FileConfiguration<T> : IConfiguration<T> where T : new() {
     /// <inheritdoc />
     public async Task SaveAsync(CancellationToken cancellationToken = default) {
         ObjectDisposedException.ThrowIf(_disposed, this);
+
+        if (IsReadOnly) {
+            throw new InvalidOperationException("The configuration is read-only.");
+        }
 
         if (!Directory.Exists(DirectoryPath)) {
             Directory.CreateDirectory(DirectoryPath);

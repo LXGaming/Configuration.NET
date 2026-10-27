@@ -5,6 +5,9 @@ namespace LXGaming.Configuration.Memory;
 public sealed class MemoryConfiguration<T> : IConfiguration<T> where T : new() {
 
     /// <inheritdoc />
+    public bool IsReadOnly => false;
+
+    /// <inheritdoc />
     public T? Value { get; } = new();
 
     /// <inheritdoc />
