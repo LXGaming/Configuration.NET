@@ -18,7 +18,7 @@ public interface IConfiguration : IDisposable {
     /// </returns>
     /// <param name="cancellationToken">The token to observe.</param>
     /// <exception cref="ObjectDisposedException">The current instance has already been disposed.</exception>
-    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> has been canceled.</exception>
+    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> has been cancelled.</exception>
     Task LoadAsync(CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -29,6 +29,6 @@ public interface IConfiguration : IDisposable {
     /// </returns>
     /// <param name="cancellationToken">The token to observe.</param>
     /// <exception cref="ObjectDisposedException">The current instance has already been disposed.</exception>
-    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> has been canceled.</exception>
+    /// <exception cref="OperationCanceledException"><paramref name="cancellationToken"/> has been cancelled.</exception>
     Task SaveAsync(CancellationToken cancellationToken = default);
 }
